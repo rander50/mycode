@@ -1,0 +1,37 @@
+---
+- name: bootstapping and new user creation
+  hosts: raiders  # our group in our inventory
+  gather_facts: no
+  connection: ansible.builtin.ssh
+
+  # vars_files expexts a list of 1 or more files
+  vars_files:
+    - vars/newusers1.yml
+
+  tasks:
+  - name: update apt with latest repo info
+    ansible.builtin.raw: apt update -y
+    become: yes
+
+  - name: install py3 and pip3 with ansible raw
+    ansible.builtin.raw: "apt install -y python3-pip"
+    become: yes
+
+  - name: create new group
+    ansible.builtin.group:
+      name: sandbox
+      state: present
+    become: yes
+
+  - name: Add newusers to group sandbox
+    ansible.builtin.user:
+      name: "{{ item }}"
+      comment: throwaway user account for testing
+      state: present
+      shell: /bin/bash  #Default
+      system: no  #Default
+      createhome: yes  #Default
+      group: sandbox
+    become: yes
+    loop: "{{ users1 }}"
+
