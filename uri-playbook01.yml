@@ -15,7 +15,7 @@
         return_content: true
       register: validateurl  # save the "response" (defines the var validateurl)
 
-    - name: Info: HTTP Response for the URL
+    - name: "Info: HTTP Response for the URL"
       ansible.builtin.debug:   # the debug module prints to the screen
         var: validateurl
 
