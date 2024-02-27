@@ -1,0 +1,21 @@
+---
+- name: Install sl with yum
+  hosts: planetexpress
+  connection: ansible.builtin.ssh   # default
+  gather_facts: true   # Default
+
+  tasks:
+
+    - name: Install steam locomotive on CentOS machines
+      ansible.builtin.yum:
+        name: sl
+        state: present
+      become: true
+      when: ansible_distribution == "CentOS"
+
+    - name: Install steam locomotive on Ubuntu machines
+      ansible.builtin.apt:
+        name: sl
+        state: present
+      become: true
+      when: ansible_distribution == "Ubuntu"
