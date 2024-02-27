@@ -1,0 +1,21 @@
+---
+- name: A playbook showing the file module
+  hosts: planetexpress
+  connection: ssh
+  gather_facts: false
+
+  vars:
+    # the variable "st" is mapped to "directory"
+    st: absent
+
+  tasks:
+  - name: Create directory where Space Station documents will resite"
+    become_user: root
+    become: true
+    ansible.builtin.file:
+      path: "/home/{{ item }}/station_docs/"
+      state: "{{ st }}"
+      owner: "{{ item }}"
+      group: "{{ item }}"
+      mode: "0755"
+    loop: [fry, bender, zoidberg]
