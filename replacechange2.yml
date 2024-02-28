@@ -1,0 +1,47 @@
+---
+- name: Exploring replace
+  hosts: planetexpress
+  gather_facts: true   # Required for when statement
+  connection: ansible.builtin.ssh   # Default
+
+  vars:
+    fileloc: "/var/log/bootstrap.log"
+
+  tasks:
+    
+    # ansible.builtin.replace - replaced ALL instances of an occurrence
+    - name: "Insert a line into {{ fileloc }}"
+      ansible.builtin.replace:
+        path: "{{ fileloc }}"
+        regexp: "^REDACTED BY ANSIBLE*"
+        replace: "REDACTED BY ANSIBLE replace module 3"
+        backup: true
+      become: true
+      when: ansible_os_family == "Debian"   # restrict to only Debian hosts, depends on gather_facts
+      register: return_values
+      notify: bobs_backups
+
+
+# Extra Stuff From Lecture - Copy File to Local Device and Deletes the File from hosts
+
+    # Used to see return values from ansible.builtin.replace
+    - name: Read the return values from ansible.builtin.replace 
+      debug:
+        var: return_values
+
+  handlers:          
+    - name: bobs_archive_backup   # Fetch the backup logs from the target host
+      ansible.builtin.fetch:
+        src: "{{ return_values.backup_file }}"
+        dest: "~/return_backups/"
+      when: ansible_os_family == "Debian"  # restrict to only Debian hosts, depends on gather_facts
+      listen: bobs_backups
+
+    - name: bobs_archive_cleanup   # Delete the archive file from the target host
+      ansible.builtin.file:
+        path: "{{ return_values.backup_file }}"
+        state: absent
+      when: ansible_os_family == "Debian"  # restrict to only Debian hosts, depends on gather_facts
+      become: true
+      listen: bobs_backups
+
