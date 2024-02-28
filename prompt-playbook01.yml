@@ -1,0 +1,21 @@
+---
+- name: How to prompt for variables
+  hosts: localhost
+  gather_facts: false
+
+  vars_prompt:
+
+    - name: yourpassword   # Variable name
+      prompt: What is your password?   # Question to ask
+      private: true   # Do not reveal the password, optional
+      encrypt: sha512_crypt   # Use encryption method, optional
+      confirm: true   # Type the password twice, optional
+      salt_size: 7   # Size of RAND generated, optional
+      # salt: slappysquirrel88   #Provide your own RAND, optional
+      default: qwerty   # Default to this input, optional
+
+  tasks:
+
+    - name: Print out the password
+      debug:
+        msg: "{{ yourpassword }}"   # Could also do var: yourpassword
