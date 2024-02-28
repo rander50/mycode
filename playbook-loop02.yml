@@ -1,0 +1,18 @@
+---
+- name: Loop with 3 seconds pause between runs
+  hosts: localhost
+  connection: ansible.builtin.local
+  gather_facts: false
+
+  tasks:
+
+    - name: Run a debug with a loop implementing a 3 second pause between runs
+      ansible.builtin.debug:
+        var: item
+      loop:   # for item in loop
+        - server1
+        - server2
+        - server3
+        - server4
+      loop_control:
+        pause: 3   # In seconds

@@ -1,0 +1,16 @@
+---
+- name: Working with simple dictionaries
+  hosts: localhost
+  connection: ansible.builtin.local
+  gather_facts: false
+
+  tasks:
+
+    - name: Loop across a list object which contains dictionaries
+      ansible.builtin.debug:
+        msg: "{{ item.name }} belongs in the {{ item.groups }} aisle"
+      loop:   # for item in loop -- loop[0].name = orange belongs in the loop[0].group = fruit
+        - { name: 'orange', groups: 'fruit' }
+        - { name: 'lemon', groups: 'fruit' }
+        - { name: 'cookie', groups: 'snack' }
+        - { name: 'carrot', groups: 'vegetable' } 
