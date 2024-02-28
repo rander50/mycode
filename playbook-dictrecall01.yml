@@ -1,0 +1,37 @@
+---
+- name: Intro to Dictionaries
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+
+    configA: exampleA.cfg
+    configB: exmapleB.cfg
+    licensetypes:
+      opentypes:
+        - apache2.0
+        - gnu public license (GPL)
+        - mit license
+        - mozilla public license
+      paytypes:
+        - windows
+        - redhat
+        - apple
+
+  tasks:
+
+    - name: Recall a key value pair mapping
+      ansible.builtin.debug:
+        var: configA
+
+    - name: Recall a key value mapping wher the value is a list
+      ansible.builtin.debug:
+        var: licensetypes.opentypes
+
+    - name: Display the MIT License
+      ansible.builtin.debug:
+        var: licensetypes.opentypes[2]
+
+    - name: Diaplay Windows
+      ansible.builtin.debug:
+        var: licensetypes.paytypes[0]
