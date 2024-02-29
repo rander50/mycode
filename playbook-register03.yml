@@ -1,0 +1,36 @@
+---
+- name: More Register Examples
+  hosts: planetexpress
+  gather_facts: true
+  connection: ansible.builtin.ssh
+
+  tasks:
+
+    - name: Reach out with get_url to random generation
+      ansible.builtin.get_url:
+        url: https://www.random.org/integers/?num=1&min=0&max=1&col=1&base=10&format=plain&rnd=new
+        dest: ~/rand.txt
+        force: true
+
+    - name: Read the rand.txt and save the results in randvarz
+      ansible.builtin.command: cat ~/rand.txt
+      register: randvarz
+
+    # - name: Reach out with get_uri to random generation   # shortcut to replace both above tasks
+    #   ansible.builtin.uri:
+    #     url: https://www.random.org/integers/?num=1&min=0&max=1&col=1&base=10&format=plain&rnd=new
+    #     dest: ~/rand.txt
+    #     force: true
+    #     return_content: true
+    #   register: randvarz
+    #
+
+    - name: debug - display a win
+      ansible.builtin.debug:
+        msg: "Congratulations! {{ ansible_hostname }} won :)"
+      when: randvarz.stdout == "1"   # Change to randvarz.content when using shortcut
+
+    - name: debug - display a failure
+      ansible.builtin.debug:
+        msg: "Sorry. {{ ansible_hostname }} lost :("
+      when: randvarz.stdout == "0"   # Change to randvarz.content when using shortcut
