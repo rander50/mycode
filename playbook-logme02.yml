@@ -1,0 +1,20 @@
+---
+- name: Turn of logging at play level
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: true   # uncomment this line to ensure  tasks are not logged
+
+  tasks:
+
+    # API interaction often include login ingormation or return sensitive data
+    - name: Perform an API lookup (this may display sensitive data)
+      ansible.builtin.uri:
+        url: "https://api.le-systeme-solaire.net/rest/bodies/neso"
+        method: GET
+      register: results
+
+    # Developers will ofter leave in debug tasks for future debugging
+    - name: Debug task left in by a developer for debugging
+      ansible.builtin.debug:
+        var: results

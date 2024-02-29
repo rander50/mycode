@@ -1,0 +1,16 @@
+---
+- name: Logging - Everything to standard out gets logged
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: First debug
+      ansible.builtin.debug:
+        msg: The first message in the playbook.   # This will NOT be logged
+      no_log: true   # This will PREVENT the task from being logged
+
+    - name: Second debug
+      ansible.builtin.debug:
+        msg: The second message in the playbook.   # This WILL be logged
