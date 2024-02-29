@@ -1,0 +1,50 @@
+---
+- name: Advanced Playbook Architecture
+  hosts: ghosthouse
+  gather_facts: true
+
+  pre_tasks:   # These run first, followed by handler calls, recommend a pre_task role instead
+
+  # by default, ansible looks for the role path as...
+  # roles/ in the relative local directory
+  # /etc/ansible/roles
+  # controlled in ansible.cfg
+  roles:
+    
+    - bootstrap   # This role runs next
+    - bootstrap   # By default, this will not run a second time, must change allow_duplicateds in the main.yml file
+    - webserver   # This role runs after bootstrap
+
+  tasks:   # Runs after eoles, followed by handlers, not recommended
+
+    - name: Print to the screen
+      ansible.builtin.debug: 
+        msg: "Example of a task within the task section"
+
+    # default to import_role if you are unsure what to use
+    # if nothing else, syntax errors in your code will be caught
+    # when the playbook is run, instead of when the role is called
+
+    - import_role:   # Static, Not recommended, pull in the role to the directory
+      name: nginx    # Import and include     
+
+    - include_role:  # Dynamic, Not recomended, pull in the role to the directory
+      name: webserver-db-{{ webserverhostname | lower }}
+
+  post_tasks:   # This runs after roles, followed by handlers
+
+  handlers:   # custom handlers called by pre_tasks, tasks, or post_tasks
+
+
+
+# condider new plays as 'isolated' from the previous play
+---
+- name: A second play
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Print to the screen
+      ansible.builtin.debug:
+        msg: "This is a seperate play, but think og it almost like running an entirely new playbook!"
+
