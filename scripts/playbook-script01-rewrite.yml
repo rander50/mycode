@@ -1,0 +1,19 @@
+---
+- name: Playbook that sends HTTP GET to target URI
+  hosts: localhost
+
+  vars:
+
+    urltolookup: "http://api.open-notify.org/astros.json"
+
+  tasks:
+
+    - name: Lookup API with uri module
+      ansible.builtin.uri:
+        url: "{{ urltolookup }}"
+        method: GET
+      register: results
+
+    - name: Print out the 'results'
+      ansible.builtin.debug:
+        var: results

@@ -1,0 +1,15 @@
+---
+- name: Playbook that runs a Perl script
+  hosts: localhost
+
+  tasks:
+
+    - name: Copy script to target hosts ane execute it
+      ansible.builtin.script: ~/mycode/scripts/starWars.pl
+      args:
+        executable: /usr/bin/perl
+      register: results
+
+    - name: Print out the 'results'
+      ansible.builtin.debug:
+        var: results
