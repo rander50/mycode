@@ -1,0 +1,22 @@
+---
+- name: change switch configuration
+  hosts: eosswitches:iosswitches
+  gather_facts: false
+  connection: network_cli
+
+  tasks: 
+
+    - name: load new NTP configuration
+      ansible.netcommon.cli_config: 
+        config: "{{ ntp_commands }}"
+      become: true
+      notify:
+        - save and commit
+    
+  handlers:
+    
+    # Handlers only run if a task runs that notifies the handler to run
+    - name: save and commit
+      ansible.netcommon.cli_command:
+        command: "{{ save }}"
+      become: true  
