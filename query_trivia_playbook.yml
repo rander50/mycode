@@ -1,0 +1,30 @@
+---
+- name: Query Trivia API
+  hosts: localhost
+  gather_facts: false
+
+  vars_prompt:
+
+    - name: "AMOUNT"
+      prompt: "Enter the amount of questions"
+      private: false
+      default: "3"
+    - name: "DIFFICULTY"
+      prompt: "Enter the difficulty (easy, medium, hard)"
+      private: false
+      default: "medium"
+
+  tasks:
+
+    - name: Call custom API module
+      trivia_api:
+        amount: "{{ AMOUNT }}"
+        difficulty: "{{ DIFFICULTY }}"
+      register: api_result
+
+    - name: Display API response
+      ansible.builtin.debug:
+        msg: "{{ item['question'] }} A: {{ item['correct_answer'] }}, B: {{ item['incorrect_answers'][0] }}, C: {{ item['incorrect_answers'][1] }}, D: {{ item['incorrect_answers'][2] }}  Correct Answer: A: {{ item['correct_answer'] }}"
+      loop: "{{ api_result.questions }}"
+
+
